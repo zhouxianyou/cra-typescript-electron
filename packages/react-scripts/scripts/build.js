@@ -36,6 +36,7 @@ const printHostingInstructions = require('react-dev-utils/printHostingInstructio
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const spawn = require('child_process').spawn;
 
+const printBuildError = require('react-dev-utils/printBuildError');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -103,7 +104,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
     },
     err => {
       console.log(chalk.red('Failed to compile.\n'));
-      console.log((err.message || err) + '\n');
+      printBuildError(err);
       process.exit(1);
     }
   );
