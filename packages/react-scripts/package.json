@@ -1,14 +1,14 @@
 {
-  "name": "react-scripts-ts",
+  "name": "react-scripts-ts-electron",
   "version": "2.6.0",
   "description": "Configuration and scripts for Create React App.",
-  "repository": "wmonk/create-react-app",
+  "repository": "swengorschewski/cra-typescript-electron",
   "license": "BSD-3-Clause",
   "engines": {
     "node": ">=6"
   },
   "bugs": {
-    "url": "https://github.com/wmonk/create-react-app/issues"
+    "url": "https://github.com/swengorschewski/cra-typescript-electron/issues"
   },
   "files": [
     "bin",
