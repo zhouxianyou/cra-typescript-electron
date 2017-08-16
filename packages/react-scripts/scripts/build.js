@@ -37,6 +37,8 @@ const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const spawn = require('child_process').spawn;
 
 const printBuildError = require('react-dev-utils/printBuildError');
+const spawn = require('child_process').spawn;
+
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;

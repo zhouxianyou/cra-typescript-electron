@@ -49,6 +49,11 @@ module.exports = function(
   
   electronAppPackage(appPackage);
 
+  // inject relative urls into index.html
+  appPackage.homepage = "./"
+
+  console.log(appPackage);
+
   fs.writeFileSync(
     path.join(appPath, "package.json"),
     JSON.stringify(appPackage, null, 2)
