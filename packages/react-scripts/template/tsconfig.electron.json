@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-<<<<<<< HEAD
     "outDir": "build/electron",
     "module": "commonjs",
     "rootDir": "src/electron"
@@ -16,9 +15,4 @@
     "src/app/setupTests.ts",
     "src/app"
   ]
-=======
-    "module": "commonjs",
-    "rootDir": "src/app"
-  }
->>>>>>> change template structure to support sources for electron and react apps
 }
