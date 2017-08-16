@@ -1,6 +1,6 @@
 {
   "name": "react-scripts-ts-electron",
-  "version": "2.6.0",
+  "version": "0.1.9",
   "description": "Configuration and scripts for Create React App.",
   "repository": "swengorschewski/cra-typescript-electron",
   "license": "BSD-3-Clause",
@@ -19,7 +19,7 @@
     "utils"
   ],
   "bin": {
-    "react-scripts-ts": "./bin/react-scripts-ts.js"
+    "react-scripts-ts-electron": "./bin/react-scripts-ts-electron.js"
   },
   "dependencies": {
     "autoprefixer": "7.1.1",
@@ -53,9 +53,11 @@
     "webpack": "2.6.1",
     "webpack-dev-server": "2.5.0",
     "webpack-manifest-plugin": "1.1.0",
-    "whatwg-fetch": "2.0.3"
+    "whatwg-fetch": "2.0.3",
+    "ts-node": "^3.3.0"
   },
   "devDependencies": {
+    "electron": "^1.7.5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },

@@ -39,10 +39,10 @@ module.exports = function(
 
   // Setup the script rules
   appPackage.scripts = {
-    start: 'react-scripts-ts start',
-    build: 'react-scripts-ts build',
-    test: 'react-scripts-ts test --env=jsdom',
-    eject: 'react-scripts-ts eject',
+    start: 'react-scripts-ts-electron start',
+    build: 'react-scripts-ts-electron build',
+    test: 'react-scripts-ts-electron test --env=jsdom',
+    eject: 'react-scripts-ts-electron eject',
   };
 
   console.log(appPackage);
@@ -119,6 +119,19 @@ module.exports = function(
     fs.unlinkSync(templateDependenciesPath);
   }
 
+  const deps = [
+    'electron',
+  ];
+
+  console.log(`Installing ${deps.join(', ')} ${command}...`);
+  console.log();
+
+  const procDeps = spawn.sync(command, args.concat(deps), { stdio: 'inherit' });
+  if (procDeps.status !== 0) {
+    console.error(`\`${command} ${args.concat(deps).join(' ')}\` failed`);
+    return;
+  }
+
   const types = [
     '@types/node',
     '@types/react',
@@ -129,7 +142,7 @@ module.exports = function(
   console.log(`Installing ${types.join(', ')} ${command}...`);
   console.log();
 
-  const proc = spawn.sync(command, args.concat(types), { stdio: 'inherit' });
+  const proc = spawn.sync(command, args.concat('-D').concat(types), { stdio: 'inherit' });
   if (proc.status !== 0) {
     console.error(`\`${command} ${args.concat(types).join(' ')}\` failed`);
     return;

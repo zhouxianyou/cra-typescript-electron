@@ -41,6 +41,9 @@ const paths = require('../config/paths');
 const config = require('../config/webpack.config.dev');
 const createDevServerConfig = require('../config/webpackDevServer.config');
 
+const spawn = require('child_process').spawn;
+const waitOn = require('./utils/waitOn');
+
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
 
@@ -84,14 +87,38 @@ choosePort(HOST, DEFAULT_PORT)
         clearConsole();
       }
       console.log(chalk.cyan('Starting the development server...\n'));
-      openBrowser(urls.localUrlForBrowser);
+      // openBrowser(urls.localUrlForBrowser);
     });
+
+    let electron;
 
     ['SIGINT', 'SIGTERM'].forEach(function(sig) {
       process.on(sig, function() {
         devServer.close();
         process.exit();
+        if (electron) {
+          electron.kill('SIGINT');
+        }
       });
+    });
+
+    const reqOptions = {
+      host: 'localhost',
+      method: 'GET',
+      port,
+    };
+
+    const electronBinPath = './node_modules/electron/dist/electron';
+    const args = ['--inspect', '-r', 'ts-node/register', './src/electron/index.ts'];
+    const env = Object.assign({}, process.env, {
+      TS_NODE_PROJECT: 'tsconfig.electron.json',
+    });
+
+    return waitOn(reqOptions, 10, 1000)
+    .then(() => {
+      electron = spawn(electronBinPath, args, { env, stdio: 'inherit' });
+      console.log('Electron startet in development mode with --inspect.')
+      electron.on('error', console.log)
     });
   })
   .catch(err => {
