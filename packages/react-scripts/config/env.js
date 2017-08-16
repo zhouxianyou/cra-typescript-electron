@@ -97,4 +97,6 @@ function getClientEnvironment(publicUrl) {
   return { raw, stringified };
 }
 
+process.env.BROWSER = 'none';
+
 module.exports = getClientEnvironment;

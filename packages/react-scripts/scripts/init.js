@@ -21,6 +21,8 @@ const path = require('path');
 const chalk = require('chalk');
 const spawn = require('react-dev-utils/crossSpawn');
 
+const { electronAppPackage, installElectronDependencies } = require('./utils/electronUtils.js');
+
 module.exports = function(
   appPath,
   appName,
@@ -44,11 +46,8 @@ module.exports = function(
     test: 'react-scripts-ts-electron test --env=jsdom',
     eject: 'react-scripts-ts-electron eject',
   };
-
-  // inject relative urls into index.html
-  appPackage.homepage = "./"
-
-  console.log(appPackage);
+  
+  electronAppPackage(appPackage);
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
@@ -107,6 +106,25 @@ module.exports = function(
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
 
+  // Install dev dependencies
+  const types = [
+    '@types/node',
+    '@types/react',
+    '@types/react-dom',
+    '@types/jest',
+  ];
+
+  console.log(`Installing ${types.join(', ')} as dev dependencies ${command}...`);
+  console.log();
+
+  const devProc = spawn.sync(command, args.concat('-D').concat(types), { stdio: 'inherit' });
+  if (devProc.status !== 0) {
+    console.error(`\`${command} ${args.concat(types).join(' ')}\` failed`);
+    return;
+  }
+
+  installElectronDependencies(spawn, command, args);
+
   // Install additional template dependencies, if present
   const templateDependenciesPath = path.join(
     appPath,
@@ -120,35 +138,6 @@ module.exports = function(
       })
     );
     fs.unlinkSync(templateDependenciesPath);
-  }
-
-  const deps = [
-    'electron',
-  ];
-
-  console.log(`Installing ${deps.join(', ')} ${command}...`);
-  console.log();
-
-  const procDeps = spawn.sync(command, args.concat(deps), { stdio: 'inherit' });
-  if (procDeps.status !== 0) {
-    console.error(`\`${command} ${args.concat(deps).join(' ')}\` failed`);
-    return;
-  }
-
-  const types = [
-    '@types/node',
-    '@types/react',
-    '@types/react-dom',
-    '@types/jest',
-  ];
-
-  console.log(`Installing ${types.join(', ')} ${command}...`);
-  console.log();
-
-  const proc = spawn.sync(command, args.concat('-D').concat(types), { stdio: 'inherit' });
-  if (proc.status !== 0) {
-    console.error(`\`${command} ${args.concat(types).join(' ')}\` failed`);
-    return;
   }
 
   // Install react and react-dom for backward compatibility with old CRA cli
