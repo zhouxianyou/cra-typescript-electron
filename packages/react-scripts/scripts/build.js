@@ -34,6 +34,8 @@ const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
+const spawn = require('child_process').spawn;
+
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -94,13 +96,10 @@ measureFileSizesBeforeBuild(paths.appBuild)
       const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
       const buildFolder = path.relative(process.cwd(), paths.appBuild);
-      printHostingInstructions(
-        appPackage,
-        publicUrl,
-        publicPath,
-        buildFolder,
-        useYarn
-      );
+
+      console.log(chalk.green('Electron sources compiled successfully.\n'));
+      console.log('build/electron');
+      spawn('./node_modules/.bin/tsc', ['-p', 'tsconfig.electron.json'], { stdio: 'inherit' });
     },
     err => {
       console.log(chalk.red('Failed to compile.\n'));

@@ -45,6 +45,9 @@ module.exports = function(
     eject: 'react-scripts-ts-electron eject',
   };
 
+  // inject relative urls into index.html
+  appPackage.homepage = "./"
+
   console.log(appPackage);
 
   fs.writeFileSync(
