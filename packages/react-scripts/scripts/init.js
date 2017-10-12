@@ -157,24 +157,6 @@ module.exports = function(
     return;
   }
 
-  const types = [
-    "@types/node",
-    "@types/react",
-    "@types/react-dom",
-    "@types/jest"
-  ];
-
-  console.log(`Installing ${types.join(", ")} ${command}...`);
-  console.log();
-
-  const proc = spawn.sync(command, args.concat("-D").concat(types), {
-    stdio: "inherit"
-  });
-  if (proc.status !== 0) {
-    console.error(`\`${command} ${args.concat(types).join(" ")}\` failed`);
-    return;
-  }
-
   // Install react and react-dom for backward compatibility with old CRA cli
   // which doesn't install react and react-dom along with react-scripts
   // or template is presetend (via --internal-testing-template)

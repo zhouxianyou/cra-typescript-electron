@@ -1,6 +1,6 @@
 {
   "name": "react-scripts-ts-electron",
-  "version": "0.1.23",
+  "version": "0.1.25",
   "description": "Configuration and scripts for Create React App.",
   "repository": "swengorschewski/cra-typescript-electron",
   "license": "BSD-3-Clause",
