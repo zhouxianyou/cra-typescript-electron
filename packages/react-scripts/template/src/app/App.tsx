@@ -1,10 +1,21 @@
-import * as React from 'react';
+import { remote } from "electron";
+import React, { Component } from "react";
 
-import './App.css';
+import "./App.css";
 
-const logo = require('./logo.svg');
+const logo = require("./logo.svg");
 
-class App extends React.Component {
+export class App extends Component {
+  constructor(props: {}) {
+    super(props);
+
+    document.addEventListener("keypress", ({ key, shiftKey, ctrlKey }: KeyboardEvent) => {
+      if (key === "i" && shiftKey && ctrlKey) {
+        remote.getCurrentWindow().webContents.toggleDevTools();
+      }
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -19,5 +30,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;

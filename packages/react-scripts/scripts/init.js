@@ -21,9 +21,9 @@ const path = require("path");
 const chalk = require("chalk");
 const spawn = require("react-dev-utils/crossSpawn");
 
-const { electronAppPackage, installElectronDependencies } = require('./utils/electronUtils.js');
+const { modifiyPackageJson } = require('./utils/electronUtils.js');
 
-module.exports = function(
+module.exports = function (
   appPath,
   appName,
   verbose,
@@ -44,12 +44,10 @@ module.exports = function(
     start: "react-scripts-ts-electron start",
     build: "react-scripts-ts-electron build",
     test: "react-scripts-ts-electron test --env=jsdom",
-    eject: "react-scripts-ts-electron eject"
+    eject: "react-scripts-ts-electron eject",
   };
-  
-  electronAppPackage(appPackage);
 
-  electronAppPackage(appPackage);
+  modifiyPackageJson(appPackage);
 
   fs.writeFileSync(
     path.join(appPath, "package.json"),
@@ -102,10 +100,10 @@ module.exports = function(
 
   if (useYarn) {
     command = "yarnpkg";
-    args = ["add"];
+    args = ["add", "-D"];
   } else {
     command = "npm";
-    args = ["install", "--save", verbose && "--verbose"].filter(e => e);
+    args = ["install", "--save-dev", verbose && "--verbose"].filter(e => e);
   }
 
   // Install dev dependencies
@@ -113,7 +111,9 @@ module.exports = function(
     "@types/node",
     "@types/react",
     "@types/react-dom",
-    "@types/jest"
+    "@types/jest",
+    "electron",
+    "electron-builder"
   ];
 
   console.log(
@@ -121,56 +121,12 @@ module.exports = function(
   );
   console.log();
 
-  const devProc = spawn.sync(command, args.concat("-D").concat(types), {
+  const devProc = spawn.sync(command, args.concat(types), {
     stdio: "inherit"
   });
   if (devProc.status !== 0) {
     console.error(`\`${command} ${args.concat(types).join(" ")}\` failed`);
     return;
-  }
-
-  installElectronDependencies(spawn, command, args);
-
-  // Install additional template dependencies, if present
-  const templateDependenciesPath = path.join(
-    appPath,
-    ".template.dependencies.json"
-  );
-  if (fs.existsSync(templateDependenciesPath)) {
-    const templateDependencies = require(templateDependenciesPath).dependencies;
-    args = args.concat(
-      Object.keys(templateDependencies).map(key => {
-        return `${key}@${templateDependencies[key]}`;
-      })
-    );
-    fs.unlinkSync(templateDependenciesPath);
-  }
-
-  const deps = ["electron"];
-
-  console.log(`Installing ${deps.join(", ")} ${command}...`);
-  console.log();
-
-  const procDeps = spawn.sync(command, args.concat(deps), { stdio: "inherit" });
-  if (procDeps.status !== 0) {
-    console.error(`\`${command} ${args.concat(deps).join(" ")}\` failed`);
-    return;
-  }
-
-  // Install react and react-dom for backward compatibility with old CRA cli
-  // which doesn't install react and react-dom along with react-scripts
-  // or template is presetend (via --internal-testing-template)
-  if (!isReactInstalled(appPackage) || template) {
-    console.log(`Installing react and react-dom using ${command}...`);
-    console.log();
-
-    const proc = spawn.sync(command, args.concat(["react", "react-dom"]), {
-      stdio: "inherit"
-    });
-    if (proc.status !== 0) {
-      console.error(`\`${command} ${args.join(" ")}\` failed`);
-      return;
-    }
   }
 
   // Display the most elegant way to cd.
@@ -226,12 +182,3 @@ module.exports = function(
   console.log();
   console.log("Happy hacking!");
 };
-
-function isReactInstalled(appPackage) {
-  const dependencies = appPackage.dependencies || {};
-
-  return (
-    typeof dependencies.react !== "undefined" &&
-    typeof dependencies["react-dom"] !== "undefined"
-  );
-}

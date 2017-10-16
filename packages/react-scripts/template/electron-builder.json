@@ -1,0 +1,10 @@
+{
+  "productName": "Typescript Electron",
+  "appId": "org.name.TSE",
+  "files": ["app/", "electron/"],
+  "directories": {
+    "app": "build",
+    "buildResources": "src/resources",
+    "output": "releases"
+  }
+}
