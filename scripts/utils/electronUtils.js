@@ -73,10 +73,11 @@ const startElectron = port => {
 
 const electronBuild = (pkg, debug) => {
   const proc = spawn(
-    "./node_modules/.bin/tsc",
+    '"./node_modules/.bin/tsc"',
     ["-p", "tsconfig.electron.json"],
     {
-      stdio: "inherit"
+      stdio: "inherit",
+      shell: true
     }
   );
 
