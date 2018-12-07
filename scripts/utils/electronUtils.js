@@ -3,6 +3,7 @@ const http = require("http");
 const spawn = require("child_process").spawn;
 const path = require("path");
 const fs = require("fs");
+const electronBin = require("electron");
 
 const throttle = delay =>
   new Promise((resolve, _) => setTimeout(resolve, delay));
@@ -51,7 +52,6 @@ const startElectron = port => {
     port
   };
 
-  const electronBinPath = "./node_modules/.bin/electron";
   const args = [
     "--inspect",
     "-r",
@@ -63,7 +63,7 @@ const startElectron = port => {
   });
 
   return waitOn(reqOptions, 10, 1000).then(() => {
-    const electron = spawn(electronBinPath, args, { env, stdio: "inherit" });
+    const electron = spawn(electronBin, args, { env, stdio: "inherit" });
     console.log("Electron startet in development mode with --inspect.");
     electron.on("error", console.log);
 
